@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en" class="font-sans">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Found-Hub - Login/Sign-Up</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body style="background-color: #1A1A1A;" class="flex flex-col min-h-screen">
+
+<!-- HEADER -->
+<header style="background-color: #121212; color: #F5F5F5; padding: 1rem 2rem;">
+    <div class="container mx-auto flex justify-between items-center">
+        <a href="index.html" class="text-2xl font-bold">Found-Hub</a>
+        <div class="hidden md:flex items-center space-x-6">
+            <a href="index.html" style="color: #CCCCCC;" class="hover:text-white transition-colors">Home</a>
+            <a href="about.html" style="color: #CCCCCC;" class="hover:text-white transition-colors">About Us</a>
+            <a href="lost-items.html" style="color: #CCCCCC;" class="hover:text-white transition-colors">Lost Items</a>
+            <a href="found-items.html" style="color: #CCCCCC;" class="hover:text-white transition-colors">Found Items</a>
+            <a href="login-signup.html" class="font-bold text-white">Login/Sign-Up</a>
+            <a href="dashboard.html" style="color: #CCCCCC;" class="hover:text-white transition-colors">Dashboard</a>
+        </div>
+    </div>
+</header>
+
+<main>
+    <!-- HERO -->
+    <section class="text-center flex flex-col items-center justify-center min-h-[40vh] p-8">
+        <h2 class="text-4xl md:text-6xl font-bold" style="color: #FFD700;">Welcome to Found-Hub!</h2>
+        <p class="mt-4 text-lg md:text-xl max-w-2xl" style="color: #FFA500;">
+            Log in or sign up to manage your lost and found items.
+        </p>
+    </section>
+
+    <!-- LOGIN -->
+    <section class="container mx-auto py-12 px-6 flex justify-center">
+        <div class="w-full max-w-md p-8 rounded-lg" style="background-color: #262626;">
+            <h2 class="text-3xl font-bold text-center mb-8" style="color: #F5F5F5;">Login to Your Account</h2>
+
+            <form class="space-y-6" onsubmit="handleLogin(event)">
+                <div>
+                    <label class="block text-sm mb-1" style="color: #CCCCCC;">College Email</label>
+                    <input id="li_email" type="email" class="w-full rounded-md p-2 text-sm"
+                           style="background-color: #1A1A1A; color:#F5F5F5; border:1px solid #333;">
+                </div>
+
+                <div>
+                    <label class="block text-sm mb-1" style="color: #CCCCCC;">Password</label>
+                    <input id="li_pass" type="password" class="w-full rounded-md p-2 text-sm"
+                           style="background-color: #1A1A1A; color:#F5F5F5; border:1px solid #333;">
+                </div>
+
+                <button class="w-full p-2 text-white font-semibold rounded-md" style="background-color:#FFA500;">
+                    Login
+                </button>
+            </form>
+        </div>
+    </section>
+
+    <!-- SIGNUP -->
+    <section class="container mx-auto py-12 px-6 flex justify-center">
+        <div class="w-full max-w-md p-8 rounded-lg" style="background-color:#262626;">
+            <h2 class="text-3xl font-bold text-center mb-8" style="color:#F5F5F5;">Create a New Account</h2>
+
+            <form class="space-y-6" onsubmit="handleSignup(event)">
+                <div>
+                    <label class="block text-sm mb-1" style="color:#CCCCCC;">Full Name</label>
+                    <input id="su_name" type="text" class="w-full rounded-md p-2 text-sm"
+                           style="background-color:#1A1A1A; color:#F5F5F5; border:1px solid #333;">
+                </div>
+
+                <div>
+                    <label class="block text-sm mb-1" style="color:#CCCCCC;">College Email</label>
+                    <input id="su_email" type="email" class="w-full rounded-md p-2 text-sm"
+                           style="background-color:#1A1A1A; color:#F5F5F5; border:1px solid #333;">
+                </div>
+
+                <div>
+                    <label class="block text-sm mb-1" style="color:#CCCCCC;">Password</label>
+                    <input id="su_pass" type="password" class="w-full rounded-md p-2 text-sm"
+                           style="background-color:#1A1A1A; color:#F5F5F5; border:1px solid #333;">
+                </div>
+
+                <div>
+                    <label class="block text-sm mb-1" style="color:#CCCCCC;">Confirm Password</label>
+                    <input id="su_pass2" type="password" class="w-full rounded-md p-2 text-sm"
+                           style="background-color:#1A1A1A; color:#F5F5F5; border:1px solid #333;">
+                </div>
+
+                <button class="w-full p-2 text-white font-semibold rounded-md" style="background-color:#FFA500;">
+                    Sign Up
+                </button>
+            </form>
+        </div>
+    </section>
+</main>
+
+<footer style="background-color:#121212; color:#CCCCCC;" class="py-6 text-center mt-auto">
+    <p>© 2023 Found-Hub. All rights reserved.</p>
+</footer>
+
+<!-- ✅ BACKEND CONNECTION + LOGIN/SIGNUP JS -->
+<script>
+const API = "http://localhost:4000";
+
+function saveAuth(res) {
+    localStorage.setItem("fh_token", res.token);
+    localStorage.setItem("fh_user", JSON.stringify(res.user));
+}
+
+async function handleLogin(e) {
+    e.preventDefault();
+
+    const email = li_email.value.trim();
+    const password = li_pass.value;
+
+    if (!email || !password) return alert("Enter email and password");
+
+    const r = await fetch(`${API}/api/auth/login`, {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({email, password})
+    });
+
+    const res = await r.json();
+    if (res.error) return alert(res.error);
+
+    saveAuth(res);
+    location.href = "dashboard.html";
+}
+
+async function handleSignup(e) {
+    e.preventDefault();
+
+    const name = su_name.value.trim();
+    const email = su_email.value.trim();
+    const pass = su_pass.value;
+    const pass2 = su_pass2.value;
+
+    if (!name || !email || !pass) return alert("Fill all fields");
+    if (pass !== pass2) return alert("Passwords do not match");
+
+    const r = await fetch(`${API}/api/auth/signup`, {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({name, email, password: pass})
+    });
+
+    const res = await r.json();
+    if (res.error) return alert(res.error);
+
+    saveAuth(res);
+    location.href = "dashboard.html";
+}
+</script>
+
+</body>
+</html>

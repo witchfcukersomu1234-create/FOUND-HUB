@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en" class="font-sans">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Found-Hub - Found Items</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body style="background-color:#1A1A1A" class="flex flex-col min-h-screen">
+  <!-- NAV -->
+  <header style="background-color:#121212;color:#F5F5F5;padding:1rem 2rem;">
+    <div class="container mx-auto flex justify-between items-center">
+      <div class="flex items-center space-x-4">
+        <a href="index.html" class="text-2xl font-bold">Found-Hub</a>
+      </div>
+      <div class="hidden md:flex items-center space-x-6">
+        <a href="/index.html"  style="color:#CCC" class="hover:text-white transition-colors">Home</a>
+        <a href="/about.html"  style="color:#CCC" class="hover:text-white transition-colors">About Us</a>
+        <a href="/lost-items.html"  style="color:#CCC" class="hover:text-white transition-colors">Lost Items</a>
+        <a href="/found-items.html" style="color:#CCC" class="hover:text-white transition-colors font-bold !text-white">Found Items</a>
+        <a href="/login-signup.html" style="color:#CCC" class="hover:text-white transition-colors">Login/Sign-Up</a>
+        <a href="/dashboard.html"    style="color:#CCC" class="hover:text-white transition-colors">Dashboard</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- HERO -->
+  <section class="text-center flex flex-col items-center justify-center min-h-[50vh] p-8"
+           style="background-image:linear-gradient(rgba(0,0,0,.4),rgba(0,0,0,.4)),url('campus.avif');background-size:cover;background-position:center;">
+    <h2 class="text-4xl md:text-6xl font-bold" style="color:#FFD700;">Post a Found Item</h2>
+    <p class="mt-4 text-lg md:text-xl max-w-2xl" style="color:#FFA500;">
+      Help your classmates get their belongings back. Add clear details and (optionally) a photo.
+    </p>
+  </section>
+
+  <!-- MAIN -->
+  <main class="container mx-auto py-10 px-6 grid md:grid-cols-2 gap-6">
+    <!-- Post form (left) -->
+    <section class="p-6 rounded-lg" style="background-color:#262626;">
+      <h3 class="text-2xl font-bold mb-6" style="color:#F5F5F5;">Submit details</h3>
+
+      <form id="foundForm" class="space-y-4" onsubmit="return postFound(event)">
+        <div>
+          <label class="block text-sm mb-1" style="color:#CCC;">Item Title</label>
+          <input name="title" placeholder="e.g. Realme phone, brown wallet" required
+                 class="w-full rounded-md p-2 text-sm"
+                 style="background:#1A1A1A;color:#F5F5F5;border:1px solid #262626;">
+        </div>
+
+        <div>
+          <label class="block text-sm mb-1" style="color:#CCC;">Found At (Building/Area)</label>
+          <input name="location" placeholder="Library, Canteen, Lab 302…"
+                 class="w-full rounded-md p-2 text-sm"
+                 style="background:#1A1A1A;color:#F5F5F5;border:1px solid #262626;">
+        </div>
+
+        <div>
+          <label class="block text-sm mb-1" style="color:#CCC;">Category</label>
+          <input name="category" placeholder="Phone, ID card, Bag…"
+                 class="w-full rounded-md p-2 text-sm"
+                 style="background:#1A1A1A;color:#F5F5F5;border:1px solid #262626;">
+        </div>
+
+        <div>
+          <label class="block text-sm mb-1" style="color:#CCC;">Description</label>
+          <textarea name="description" rows="3" placeholder="Color, case/stickers, brand, unique marks…"
+                    class="w-full rounded-md p-2 text-sm"
+                    style="background:#1A1A1A;color:#F5F5F5;border:1px solid #262626;"></textarea>
+        </div>
+
+        <div>
+          <label class="block text-sm mb-1" style="color:#CCC;">Photo (optional)</label>
+          <input type="file" name="photo" accept="image/*"
+                 class="w-full text-sm"
+                 style="color:#F5F5F5;">
+        </div>
+
+        <button type="submit"
+                class="w-full flex items-center justify-center p-2 text-white font-semibold rounded-md transition-colors"
+                style="background-color:#FFA500;">
+          Post Found Item
+        </button>
+      </form>
+    </section>
+
+    <!-- List (right) -->
+    <section class="p-6 rounded-lg" style="background-color:#262626;">
+      <h3 class="text-2xl font-bold mb-6" style="color:#F5F5F5;">Found board</h3>
+
+      <div class="flex gap-2 mb-4">
+        <input id="search" placeholder="Search title, location, category"
+               class="flex-1 rounded-md p-2 text-sm"
+               style="background:#1A1A1A;color:#F5F5F5;border:1px solid #262626;">
+        <button onclick="loadFound()"
+                class="px-4 rounded-md text-sm font-semibold"
+                style="background:#FFA500;color:#111;">Search</button>
+      </div>
+
+      <div id="foundList" class="space-y-3">
+        <!-- items will render here -->
+      </div>
+    </section>
+  </main>
+
+  <!-- CLAIM MODAL -->
+  <div id="claimModal"
+       class="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center p-4 hidden z-50">
+    <div class="bg-[#1A1A1A] w-full max-w-md rounded-lg shadow-xl border border-[#333] relative">
+      <button type="button"
+              onclick="closeClaimModal()"
+              class="absolute top-2 right-3 text-gray-400 hover:text-white text-xl">
+        &times;
+      </button>
+      <div class="p-5">
+        <h3 class="text-xl font-semibold mb-1" style="color:#F5F5F5;">Claim this item</h3>
+        <p id="claimItemTitle" class="text-sm mb-4" style="color:#FFA500;"></p>
+
+        <form id="claimForm" onsubmit="return submitClaimForm(event)" class="space-y-3">
+          <input type="hidden" id="claimItemId" />
+
+          <div>
+            <label class="block text-xs mb-1" style="color:#CCC;">Name on item / ID (if any)</label>
+            <input id="claimNameOnItem"
+                   class="w-full rounded-md p-2 text-sm"
+                   placeholder="Exact name printed on ID card / device name"
+                   style="background:#111;color:#F5F5F5;border:1px solid #333;">
+          </div>
+
+          <div>
+            <label class="block text-xs mb-1" style="color:#CCC;">Unique marks / identifiers</label>
+            <textarea id="claimUniqueMarks" rows="2"
+                      class="w-full rounded-md p-2 text-sm"
+                      placeholder="Scratches, sticker, wallpaper, cover color, etc."
+                      style="background:#111;color:#F5F5F5;border:1px solid #333;"></textarea>
+          </div>
+
+          <div>
+            <label class="block text-xs mb-1" style="color:#CCC;">Your contact details</label>
+            <input id="claimContact"
+                   class="w-full rounded-md p-2 text-sm"
+                   placeholder="Phone no. / email / roll no."
+                   style="background:#111;color:#F5F5F5;border:1px solid #333;">
+          </div>
+
+          <div>
+            <label class="block text-xs mb-1" style="color:#CCC;">Additional message (optional)</label>
+            <textarea id="claimExtraMessage" rows="2"
+                      class="w-full rounded-md p-2 text-sm"
+                      placeholder="Any extra information for the person who found it."
+                      style="background:#111;color:#F5F5F5;border:1px solid #333;"></textarea>
+          </div>
+
+          <button type="submit"
+                  class="w-full mt-2 py-2 rounded-md font-semibold text-sm"
+                  style="background:#FFA500;color:#111;">
+            Submit claim to founder
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer style="background:#121212;color:#CCC" class="py-6 px-4 mt-auto">
+    <div class="container mx-auto text-center">
+      <p>© 2025 Found-Hub • Your College Campus Buddy.</p>
+    </div>
+  </footer>
+
+  <!-- Page link interception for your preview wrapper (safe to keep) -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      document.querySelectorAll('a').forEach(link => {
+        const href = link.getAttribute('href');
+        link.addEventListener('click', (e) => {
+          if (href && !href.startsWith('#') && !href.startsWith('http')) {
+            e.preventDefault();
+            window.parent?.postMessage?.({ type: 'navigate', path: href }, '*');
+            window.location.href = href; // also navigate normally if not in preview wrapper
+          }
+        });
+      });
+    });
+  </script>
+
+  <!-- === API HOOKS === -->
+  <script>
+    // TODO: put your real Railway backend URL here:
+    // e.g. const API = 'https://found-hub-production.up.railway.app';
+    const API = 'http://localhost:4000';
+    function token(){ return localStorage.getItem('fh_token'); }
+    function authHeader(){ return { 'Authorization': 'Bearer ' + token() }; }
+
+    async function loadFound(){
+      const q = document.getElementById('search').value.trim();
+      const url = new URL(API + '/api/items');
+      url.searchParams.set('type','found');
+      if(q) url.searchParams.set('q', q);
+
+      const r = await fetch(url);
+      const items = await r.json();
+
+      const wrap = document.getElementById('foundList');
+      if (!Array.isArray(items) || !items.length){
+        wrap.innerHTML = `<p style="color:#AAA">Nothing posted yet.</p>`;
+        return;
+      }
+
+      wrap.innerHTML = items.map(i => {
+        const safeTitle = String(i.title || '').replace(/'/g,"\\'");
+        return `
+        <div class="rounded-md p-3" style="background:#1A1A1A;border:1px solid #333;">
+          <div class="flex justify-between items-center">
+            <div>
+              <div class="font-semibold" style="color:#F5F5F5">${i.title}</div>
+              <div class="text-xs" style="color:#AAA">${i.location || ''} ${i.category ? '• ' + i.category : ''}</div>
+            </div>
+            ${i.photo_url ? `<img src="${API + i.photo_url}" alt="photo" class="w-20 h-20 object-cover rounded-md border border-[#333]">` : ''}
+          </div>
+          ${i.description ? `<div class="mt-2 text-sm" style="color:#CFCFCF">${i.description}</div>` : ''}
+
+          <div class="mt-3 flex gap-2">
+            <button onclick="openClaimModal(${i.id}, '${safeTitle}')"
+                    class="px-3 py-1 rounded-md text-sm font-semibold"
+                    style="background:#FFA500;color:#111;">Claim</button>
+          </div>
+        </div>
+        `;
+      }).join('');
+    }
+
+    async function postFound(e){
+      e.preventDefault();
+      if(!token()){
+        alert('Please login first.'); 
+        window.location.href = 'login-signup.html';
+        return false;
+      }
+      const fd = new FormData(document.getElementById('foundForm'));
+      fd.append('type','found');
+
+      const r = await fetch(API + '/api/items', {
+        method:'POST',
+        headers: authHeader(),
+        body: fd
+      });
+      const res = await r.json();
+      if(res.error){ alert(res.error); return false; }
+      e.target.reset();
+      loadFound();
+      return false;
+    }
+
+    // ===== Claim flow with modal =====
+    function openClaimModal(itemId, title){
+      if(!token()){
+        alert('Please login first.');
+        window.location.href = 'login-signup.html';
+        return;
+      }
+      document.getElementById('claimItemId').value = itemId;
+      document.getElementById('claimItemTitle').textContent = 'Item: ' + title;
+      document.getElementById('claimModal').classList.remove('hidden');
+    }
+
+    function closeClaimModal(){
+      document.getElementById('claimModal').classList.add('hidden');
+      document.getElementById('claimForm').reset();
+    }
+
+    async function submitClaimForm(e){
+      e.preventDefault();
+      if(!token()){
+        alert('Please login first.');
+        window.location.href = 'login-signup.html';
+        return false;
+      }
+
+      const itemId = document.getElementById('claimItemId').value;
+      const nameOnItem = document.getElementById('claimNameOnItem').value.trim();
+      const uniqueMarks = document.getElementById('claimUniqueMarks').value.trim();
+      const contact = document.getElementById('claimContact').value.trim();
+      const extra = document.getElementById('claimExtraMessage').value.trim();
+
+      let msg = '';
+      if(nameOnItem) msg += `Name on item/ID: ${nameOnItem}\n`;
+      if(uniqueMarks) msg += `Unique marks/identifiers: ${uniqueMarks}\n`;
+      if(contact) msg += `Contact: ${contact}\n`;
+      if(extra) msg += `Extra info: ${extra}\n`;
+      if(!msg) msg = 'No extra ownership details provided.';
+
+      try{
+        const r = await fetch(`${API}/api/items/${itemId}/claims`, {
+          method:'POST',
+          headers: { 'Content-Type':'application/json', ...authHeader() },
+          body: JSON.stringify({ message: msg })
+        });
+        const res = await r.json();
+        if(res.error){
+          alert(res.error);
+        }else{
+          alert('Claim submitted to the poster!');
+          closeClaimModal();
+        }
+      }catch(err){
+        console.error(err);
+        alert('Something went wrong while sending the claim.');
+      }
+      return false;
+    }
+
+    loadFound();
+  </script>
+</body>
+</html>

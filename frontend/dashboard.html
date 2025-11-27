@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en" class="font-sans">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Found-Hub - Dashboard</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-[#111] text-gray-100 min-h-screen flex flex-col">
+  <!-- NAV -->
+  <header class="bg-[#121212] text-[#F5F5F5] py-4 px-6">
+    <div class="container mx-auto flex justify-between items-center">
+      <div class="flex items-center space-x-4">
+        <a href="index.html" class="text-2xl font-bold">Found-Hub</a>
+      </div>
+      <nav class="hidden md:flex items-center space-x-6 text-sm">
+        <a href="/index.html" class="hover:text-white text-gray-300">Home</a>
+        <a href="/about.html" class="hover:text-white text-gray-300">About Us</a>
+        <a href="/lost-items.html" class="hover:text-white text-gray-300">Lost Items</a>
+        <a href="/found-items.html" class="hover:text-white text-gray-300">Found Items</a>
+        <a href="/login-signup.html" class="hover:text-white text-gray-300">Login/Sign-Up</a>
+        <a href="/dashboard.html" class="hover:text-white text-white font-semibold">Dashboard</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- MAIN -->
+  <main class="container mx-auto flex-1 py-8 px-4 md:px-6 space-y-8">
+    <h1 class="text-3xl font-bold mb-2">Your Dashboard</h1>
+    <p class="text-sm text-gray-400 mb-6">
+      Here you can see items you posted, claims on your items, and claims you submitted to others.
+    </p>
+
+    <div class="grid md:grid-cols-3 gap-6">
+      <!-- My Items -->
+      <section class="bg-[#1A1A1A] border border-[#333] rounded-lg p-4 flex flex-col">
+        <h2 class="text-xl font-semibold mb-3">My Posted Items</h2>
+        <div id="myItems" class="space-y-3 text-sm flex-1 overflow-y-auto max-h-[60vh]">
+          <!-- filled by JS -->
+        </div>
+      </section>
+
+      <!-- Incoming Claims -->
+      <section class="bg-[#1A1A1A] border border-[#333] rounded-lg p-4 flex flex-col">
+        <h2 class="text-xl font-semibold mb-3">Incoming Claims (On My Items)</h2>
+        <div id="incomingClaims" class="space-y-3 text-sm flex-1 overflow-y-auto max-h-[60vh]">
+          <!-- filled by JS -->
+        </div>
+      </section>
+
+      <!-- My Claims -->
+      <section class="bg-[#1A1A1A] border border-[#333] rounded-lg p-4 flex flex-col">
+        <h2 class="text-xl font-semibold mb-3">My Submitted Claims</h2>
+        <div id="myClaims" class="space-y-3 text-sm flex-1 overflow-y-auto max-h-[60vh]">
+          <!-- filled by JS -->
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="bg-[#121212] text-gray-400 text-center py-4 text-sm mt-auto">
+    © 2025 Found-Hub • JJ Magdum College Lost & Found
+  </footer>
+
+  <!-- JS -->
+  <script>
+    // TODO: put your actual Railway backend URL here
+    // e.g. const API = 'https://found-hub-production.up.railway.app';
+    const API = 'http://localhost:4000';
+
+    function token() { return localStorage.getItem('fh_token'); }
+    function authHeader() { return { 'Authorization': 'Bearer ' + token() }; }
+
+    function requireLogin() {
+      if (!token()) {
+        alert('Please login first.');
+        window.location.href = 'login-signup.html';
+        return false;
+      }
+      return true;
+    }
+
+    async function loadMyItems() {
+      if (!requireLogin()) return;
+      try {
+        const res = await fetch(API + '/api/my/items', { headers: authHeader() });
+        const items = await res.json();
+        const box = document.getElementById('myItems');
+
+        if (!Array.isArray(items) || !items.length) {
+          box.innerHTML = '<p class="text-gray-400 text-sm">You have not posted any items yet.</p>';
+          return;
+        }
+
+        box.innerHTML = items.map(i => `
+          <div class="border border-[#333] rounded-md p-2">
+            <div class="font-semibold text-sm">${i.title}</div>
+            <div class="text-xs text-gray-400">
+              ${i.type ? i.type.toUpperCase() + ' • ' : ''}${i.location || ''}
+            </div>
+            ${i.status ? `<div class="mt-1 text-[11px] text-gray-400">Status: ${i.status}</div>` : ''}
+          </div>
+        `).join('');
+      } catch (e) {
+        console.error(e);
+        document.getElementById('myItems').innerHTML =
+          '<p class="text-red-400 text-sm">Error loading items.</p>';
+      }
+    }
+
+    async function loadIncomingClaims() {
+      if (!requireLogin()) return;
+      try {
+        const res = await fetch(API + '/api/incoming/claims', { headers: authHeader() });
+        const claims = await res.json();
+        const box = document.getElementById('incomingClaims');
+
+        if (!Array.isArray(claims) || !claims.length) {
+          box.innerHTML = '<p class="text-gray-400 text-sm">No one has claimed your items yet.</p>';
+          return;
+        }
+
+        box.innerHTML = claims.map(c => `
+          <div class="border border-[#333] rounded-md p-2">
+            <div class="font-semibold text-sm">Item: ${c.title} (${c.type})</div>
+            <div class="text-xs text-gray-400 mb-1">
+              Location: ${c.location || 'N/A'}
+            </div>
+            <div class="text-xs text-gray-300 mb-1">
+              Claimer: ${c.claimer_name || ('User #' + c.claimer_id)}
+            </div>
+            <div class="text-[11px] text-gray-400 mb-1">
+              Status: ${c.status || 'pending'}
+            </div>
+            <pre class="text-[11px] text-gray-200 whitespace-pre-wrap mt-1 border-t border-[#333] pt-1">
+${c.message}
+            </pre>
+          </div>
+        `).join('');
+      } catch (e) {
+        console.error(e);
+        document.getElementById('incomingClaims').innerHTML =
+          '<p class="text-red-400 text-sm">Error loading incoming claims.</p>';
+      }
+    }
+
+    async function loadMyClaims() {
+      if (!requireLogin()) return;
+      try {
+        const res = await fetch(API + '/api/my/claims', { headers: authHeader() });
+        const claims = await res.json();
+        const box = document.getElementById('myClaims');
+
+        if (!Array.isArray(claims) || !claims.length) {
+          box.innerHTML = '<p class="text-gray-400 text-sm">You have not claimed any items yet.</p>';
+          return;
+        }
+
+        box.innerHTML = claims.map(c => `
+          <div class="border border-[#333] rounded-md p-2">
+            <div class="font-semibold text-sm">Item: ${c.title} (${c.type})</div>
+            <div class="text-[11px] text-gray-400 mb-1">
+              Status: ${c.status || 'pending'}
+            </div>
+            <pre class="text-[11px] text-gray-200 whitespace-pre-wrap mt-1 border-t border-[#333] pt-1">
+${c.message}
+            </pre>
+          </div>
+        `).join('');
+      } catch (e) {
+        console.error(e);
+        document.getElementById('myClaims').innerHTML =
+          '<p class="text-red-400 text-sm">Error loading your claims.</p>';
+      }
+    }
+
+    // Load all sections on page load
+    loadMyItems();
+    loadIncomingClaims();
+    loadMyClaims();
+  </script>
+</body>
+</html>

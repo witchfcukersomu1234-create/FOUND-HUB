@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en" class="font-sans">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Found-Hub - About Us</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+           extend: {
+                typography: ({ theme }) => ({
+                  invert: {
+                    css: {
+                      '--tw-prose-body': theme('colors.gray[300]'),
+                      '--tw-prose-headings': theme('colors.white'),
+                      '--tw-prose-lead': theme('colors.gray[400]'),
+                      '--tw-prose-links': theme('colors.white'),
+                      '--tw-prose-bold': theme('colors.white'),
+                      '--tw-prose-counters': theme('colors.gray[400]'),
+                      '--tw-prose-bullets': theme('colors.gray[600]'),
+                      '--tw-prose-hr': theme('colors.gray[700]'),
+                      '--tw-prose-quotes': theme('colors.gray[100]'),
+                      '--tw-prose-quote-borders': theme('colors.gray[700]'),
+                      '--tw-prose-captions': theme('colors.gray[400]'),
+                      '--tw-prose-code': theme('colors.white'),
+                      '--tw-prose-pre-code': theme('colors.gray[300]'),
+                      '--tw-prose-pre-bg': 'rgba(0,0,0,0.2)',
+                      '--tw-prose-th-borders': theme('colors.gray[600]'),
+                      '--tw-prose-td-borders': theme('colors.gray[700]'),
+                    },
+                  },
+                }),
+              },
+        }
+      }
+    </script>
+</head>
+<body style="background-color: #1A1A1A;" class="flex flex-col min-h-screen">
+    <header style="background-color: #121212; color: #F5F5F5; padding: 1rem 2rem;">
+    <div class="container mx-auto flex justify-between items-center">
+        <div class="flex items-center space-x-4">
+          
+            <a href="index.html" class="text-2xl font-bold">Found-Hub</a>
+        </div>
+        <div class="hidden md:flex items-center space-x-6">
+            <a href="/index.html" style="color: #CCCCCC;" class="hover:text-white transition-colors ">Home</a>
+            <a href="/about.html" style="color: #CCCCCC;" class="hover:text-white transition-colors font-bold !text-white">About Us</a>
+            <a href="/lost-items.html" style="color: #CCCCCC;" class="hover:text-white transition-colors ">Lost Items</a>
+            <a href="/found-items.html" style="color: #CCCCCC;" class="hover:text-white transition-colors ">Found Items</a>
+            <a href="/login-signup.html" style="color: #CCCCCC;" class="hover:text-white transition-colors ">Login/Sign-Up</a>
+            <a href="/dashboard.html" style="color: #CCCCCC;" class="hover:text-white transition-colors ">Dashboard</a>
+        </div>
+    </div>
+</header>
+    <main>
+        
+                <section class="container mx-auto py-12 md:py-20 px-6 max-w-4xl">
+                    <h2 class="text-4xl font-bold text-center mb-12" style="color: #F5F5F5;">Innovating for a Smarter Campus</h2>
+                    <div class="prose prose-invert lg:prose-xl mx-auto" style="color: #CCCCCC;">
+                        <p>Founded by a dedicated team of second-year IT students, Found-Hub is a platform built by students, for students. Our vision was born out of a common campus challenge: the frustration of lost gadgets and the difficulty in returning found items.</p><p>We believe in leveraging technology to create practical solutions that enhance daily campus life. Found-Hub is more than just a system; it's a community initiative designed to foster responsibility, trust, and connection among college principles, staff, and students. We are forward-thinking, providing an innovative solution for everyone.</p>
+                    </div>
+                </section>
+    </main>
+    <footer style="background-color: #121212; color: #CCCCCC;" class="py-6 px-4 mt-auto">
+    <div class="container mx-auto text-center">
+        <p>© 2023 Found-Hub. All rights reserved. Your College Campus Buddy.</p>
+        <div class="mt-2 flex justify-center space-x-4">
+             <a href="/privacy.html" class="hover:text-white transition-colors">Privacy Policy</a>
+            <a href="/terms.html" class="hover:text-white transition-colors">Terms of Service</a>
+        </div>
+    </div>
+</footer>
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const links = document.querySelectorAll('a');
+        links.forEach(link => {
+            link.addEventListener('click', (event) => {
+                const href = link.getAttribute('href');
+                // Only intercept relative page links
+                if (href && !href.startsWith('#') && !href.startsWith('http')) {
+                    event.preventDefault();
+                    window.parent.postMessage({ type: 'navigate', path: href }, '*');
+                }
+            });
+        });
+    });
+</script>
+</body>
+</html>

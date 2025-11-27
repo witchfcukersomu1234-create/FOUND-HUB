@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en" class="font-sans">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Found-Hub - Home</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-black text-white flex flex-col min-h-screen">
+  <!-- NAV: direct access to all tabs -->
+  <header class="bg-[#121212] text-[#F5F5F5] py-4 border-b-4 border-yellow-400">
+    <div class="container mx-auto px-4 flex justify-between items-center">
+      <a href="index.html" class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-full border-2 border-yellow-400 flex items-center justify-center font-bold text-yellow-400">F</div>
+        <span class="text-2xl font-extrabold">Found-Hub</span>
+      </a>
+      <nav class="flex items-center gap-6 text-sm md:text-base">
+        <a href="index.html" class="hover:text-yellow-400">Home</a>
+        <a href="about.html" class="hover:text-yellow-400">About Us</a>
+        <a href="lost-items.html" class="hover:text-yellow-400">Lost Items</a>
+        <a href="found-items.html" class="hover:text-yellow-400">Found Items</a>
+        <a href="login-signup.html" class="hover:text-yellow-400">Login/Sign-Up</a>
+        <a href="dashboard.html" class="hover:text-yellow-400">Dashboard</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- FULLSCREEN VIDEO HERO (Black & Yellow) -->
+  <section class="relative w-full h-screen flex items-center justify-center border-4 border-yellow-400 bg-black overflow-hidden">
+    <video class="absolute inset-0 w-full h-full object-cover"
+           autoplay muted loop playsinline preload="auto" poster="snapshot.jpg">
+      <source src="campus-hero.mp4" type="video/mp4">
+      <!-- Fallback image if video isn't supported -->
+      <img src="snapshot.jpg" alt="Campus View" class="w-full h-full object-cover" />
+    </video>
+    <div class="absolute inset-0 bg-black/50"></div>
+
+    <div class="relative z-10 text-center px-4">
+      <h1 class="text-5xl md:text-6xl font-extrabold text-yellow-400 drop-shadow">FOUND-HUB</h1>
+      <p class="mt-4 text-lg md:text-2xl text-white/90">Your Campus Lost &amp; Found System</p>
+      <div class="mt-8 flex flex-wrap items-center justify-center gap-4">
+        <a href="lost-items.html" class="px-6 py-3 rounded-2xl bg-yellow-400 text-black font-semibold hover:scale-[1.02] transition">Report Lost Item</a>
+        <a href="found-items.html" class="px-6 py-3 rounded-2xl border-2 border-yellow-400 text-yellow-400 font-semibold hover:bg-yellow-400 hover:text-black transition">Post Found Item</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- MAIN (keep for future content; safe to remove if not needed) -->
+  <main id="main" class="bg-black text-white">
+    <section class="relative w-full max-w-6xl mx-auto px-4 py-12">
+      <h2 class="text-3xl md:text-4xl font-bold text-yellow-400 mb-6">How Found-Hub Works</h2>
+      <p class="text-white/80 leading-relaxed">
+        Use the buttons above to report lost items or post found ones. It’s quick and secure.
+      </p>
+    </section>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="mt-auto bg-[#121212] text-gray-300 border-t border-yellow-400/40">
+    <div class="container mx-auto px-4 py-6 text-center">
+      <p class="text-sm">© <span id="year"></span> Found-Hub. All rights reserved.</p>
+    </div>
+    <script>document.getElementById('year').textContent = new Date().getFullYear();</script>
+  </footer>
+  <script>
+    // change this later to your Railway URL when you deploy
+    const API = 'http://localhost:4000';
+    function token(){ return localStorage.getItem('fh_token'); }
+    function authHeader(){ return { 'Authorization': 'Bearer ' + token() }; }
+  </script>
+  
+</body>
+</html>
