@@ -129,10 +129,12 @@
   <!-- === API HOOKS (same as Lost page) === -->
   <script>
     // Change this to your Railway URL after deploy:
-    const API = 'http://localhost:4000';
+    // Backend API Base URL (works on mobile + desktop)
+const API = 'https://found-hub-production-sfa3.up.railway.app';
 
-    function token(){ return localStorage.getItem('fh_token'); }
-    function authHeader(){ return { 'Authorization': 'Bearer ' + token() }; }
+function token() { return localStorage.getItem('fh_token'); }
+function authHeader() { return { 'Authorization': 'Bearer ' + token() }; }
+
 
     async function loadFound(){
       const q = document.getElementById('search').value.trim();
