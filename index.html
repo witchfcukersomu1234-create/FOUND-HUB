@@ -64,7 +64,8 @@
   </footer>
   <script>
     // change this later to your Railway URL when you deploy
-    const API = 'http://localhost:4000';
+    const API = "https://found-hub-production-8fa3.up.railway.app";
+
     function token(){ return localStorage.getItem('fh_token'); }
     function authHeader(){ return { 'Authorization': 'Bearer ' + token() }; }
   </script>
