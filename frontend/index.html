@@ -64,9 +64,12 @@
   </footer>
   <script>
     // change this later to your Railway URL when you deploy
-    const API = 'http://localhost:4000';
-    function token(){ return localStorage.getItem('fh_token'); }
-    function authHeader(){ return { 'Authorization': 'Bearer ' + token() }; }
+ // Backend API Base URL (works on mobile + desktop)
+const API = 'https://found-hub-production-sfa3.up.railway.app';
+
+function token() { return localStorage.getItem('fh_token'); }
+function authHeader() { return { 'Authorization': 'Bearer ' + token() }; }
+
   </script>
   
 </body>
