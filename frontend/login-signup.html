@@ -102,12 +102,12 @@
 
 <!-- ✅ BACKEND CONNECTION + LOGIN/SIGNUP JS -->
 <script>
-const API = "http://localhost:4000";
+// Backend API Base URL (works on mobile + desktop)
+const API = 'https://found-hub-production-sfa3.up.railway.app';
 
-function saveAuth(res) {
-    localStorage.setItem("fh_token", res.token);
-    localStorage.setItem("fh_user", JSON.stringify(res.user));
-}
+function token() { return localStorage.getItem('fh_token'); }
+function authHeader() { return { 'Authorization': 'Bearer ' + token() }; }
+
 
 async function handleLogin(e) {
     e.preventDefault();
