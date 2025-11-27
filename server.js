@@ -91,9 +91,25 @@ app.post('/api/items/:id/claims', auth, (req,res)=>{
   const info=db.prepare('INSERT INTO claims(item_id, claimer_id, message) VALUES (?,?,?)').run(it.id,req.user.id,message);
   res.json(db.prepare('SELECT * FROM claims WHERE id=?').get(info.lastInsertRowid));
 });
+// claims visible to me (both submitted by me AND on my items)
 app.get('/api/my/claims', auth, (req,res)=>{
-  res.json(db.prepare(`SELECT c.*, i.title, i.type FROM claims c JOIN items i ON i.id=c.item_id WHERE c.claimer_id=? ORDER BY c.created_at DESC`).all(req.user.id));
+  const sql = `
+    SELECT 
+      c.*, 
+      i.title, 
+      i.type, 
+      i.location, 
+      i.owner_id
+    FROM claims c
+    JOIN items i ON i.id = c.item_id
+    WHERE c.claimer_id = ?      -- I submitted this claim
+       OR i.owner_id = ?        -- someone claimed MY item
+    ORDER BY c.created_at DESC
+  `;
+  
+  res.json(db.prepare(sql).all(req.user.id, req.user.id));
 });
+
 app.get('/api/my/items', auth, (req,res)=>{
   res.json(db.prepare('SELECT * FROM items WHERE owner_id=? ORDER BY date_reported DESC').all(req.user.id));
 });
