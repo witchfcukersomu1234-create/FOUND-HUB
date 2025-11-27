@@ -97,17 +97,15 @@
 </main>
 
 <footer style="background-color:#121212; color:#CCCCCC;" class="py-6 text-center mt-auto">
-    <p>© 2023 Found-Hub. All rights reserved.</p>
+    <p>© 2025 Found-Hub. All rights reserved.</p>
 </footer>
 
 <!-- ✅ BACKEND CONNECTION + LOGIN/SIGNUP JS -->
 <script>
-const API = "http://localhost:4000";
+const API = 'https://found-hub-production-sfa3.up.railway.app';
 
-function saveAuth(res) {
-    localStorage.setItem("fh_token", res.token);
-    localStorage.setItem("fh_user", JSON.stringify(res.user));
-}
+function token() { return localStorage.getItem('fh_token'); }
+function authHeader() { return { 'Authorization': 'Bearer ' + token() }; }
 
 async function handleLogin(e) {
     e.preventDefault();
@@ -154,6 +152,13 @@ async function handleSignup(e) {
     location.href = "dashboard.html";
 }
 </script>
+    <script>
+// Backend API Base URL
+const API = 'https://found-hub-production-sfa3.up.railway.app';
+
+function token() { return localStorage.getItem('fh_token'); }
+function saveToken(t) { localStorage.setItem('fh_token', t); }
+
 
 </body>
 </html>
