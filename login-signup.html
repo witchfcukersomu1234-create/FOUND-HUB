@@ -38,7 +38,7 @@
         <div class="w-full max-w-md p-8 rounded-lg" style="background-color: #262626;">
             <h2 class="text-3xl font-bold text-center mb-8" style="color: #F5F5F5;">Login to Your Account</h2>
 
-            <form class="space-y-6" onsubmit="handleLogin(event)">
+            <form id="loginForm" class="space-y-6">
                 <div>
                     <label class="block text-sm mb-1" style="color: #CCCCCC;">College Email</label>
                     <input id="li_email" type="email" class="w-full rounded-md p-2 text-sm"
@@ -63,7 +63,7 @@
         <div class="w-full max-w-md p-8 rounded-lg" style="background-color:#262626;">
             <h2 class="text-3xl font-bold text-center mb-8" style="color:#F5F5F5;">Create a New Account</h2>
 
-            <form class="space-y-6" onsubmit="handleSignup(event)">
+            <form id="signupForm" class="space-y-6">
                 <div>
                     <label class="block text-sm mb-1" style="color:#CCCCCC;">Full Name</label>
                     <input id="su_name" type="text" class="w-full rounded-md p-2 text-sm"
@@ -102,63 +102,95 @@
 
 <!-- ✅ BACKEND CONNECTION + LOGIN/SIGNUP JS -->
 <script>
-const API = 'https://found-hub-production-sfa3.up.railway.app';
-
-function token() { return localStorage.getItem('fh_token'); }
-function authHeader() { return { 'Authorization': 'Bearer ' + token() }; }
-
-async function handleLogin(e) {
-    e.preventDefault();
-
-    const email = li_email.value.trim();
-    const password = li_pass.value;
-
-    if (!email || !password) return alert("Enter email and password");
-
-    const r = await fetch(`${API}/api/auth/login`, {
-        method: "POST",
-        headers: {"Content-Type": "application/json"},
-        body: JSON.stringify({email, password})
-    });
-
-    const res = await r.json();
-    if (res.error) return alert(res.error);
-
-    saveAuth(res);
-    location.href = "dashboard.html";
-}
-
-async function handleSignup(e) {
-    e.preventDefault();
-
-    const name = su_name.value.trim();
-    const email = su_email.value.trim();
-    const pass = su_pass.value;
-    const pass2 = su_pass2.value;
-
-    if (!name || !email || !pass) return alert("Fill all fields");
-    if (pass !== pass2) return alert("Passwords do not match");
-
-    const r = await fetch(`${API}/api/auth/signup`, {
-        method: "POST",
-        headers: {"Content-Type": "application/json"},
-        body: JSON.stringify({name, email, password: pass})
-    });
-
-    const res = await r.json();
-    if (res.error) return alert(res.error);
-
-    saveAuth(res);
-    location.href = "dashboard.html";
-}
-</script>
-    <script>
 // Backend API Base URL
 const API = 'https://found-hub-production-sfa3.up.railway.app';
 
-function token() { return localStorage.getItem('fh_token'); }
-function saveToken(t) { localStorage.setItem('fh_token', t); }
+// Save auth info (adjust to your backend response shape)
+function saveAuth(data) {
+    if (data.token) {
+        localStorage.setItem('fh_token', data.token);
+    }
+    if (data.user) {
+        localStorage.setItem('fh_user', JSON.stringify(data.user));
+    }
+}
 
+// LOGIN
+async function handleLogin(e) {
+    e.preventDefault();
+
+    const email = document.getElementById('li_email').value.trim();
+    const password = document.getElementById('li_pass').value;
+
+    if (!email || !password) {
+        alert("Enter email and password");
+        return;
+    }
+
+    try {
+        const r = await fetch(`${API}/api/auth/login`, {
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify({ email, password })
+        });
+
+        const res = await r.json();
+        if (!r.ok) {
+            alert(res.error || 'Login failed');
+            return;
+        }
+
+        saveAuth(res);
+        window.location.href = "dashboard.html";
+    } catch (err) {
+        console.error(err);
+        alert("Network error while logging in");
+    }
+}
+
+// SIGNUP
+async function handleSignup(e) {
+    e.preventDefault();
+
+    const name = document.getElementById('su_name').value.trim();
+    const email = document.getElementById('su_email').value.trim();
+    const pass = document.getElementById('su_pass').value;
+    const pass2 = document.getElementById('su_pass2').value;
+
+    if (!name || !email || !pass) {
+        alert("Fill all fields");
+        return;
+    }
+    if (pass !== pass2) {
+        alert("Passwords do not match");
+        return;
+    }
+
+    try {
+        const r = await fetch(`${API}/api/auth/signup`, {
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify({ name, email, password: pass })
+        });
+
+        const res = await r.json();
+        if (!r.ok) {
+            alert(res.error || 'Signup failed');
+            return;
+        }
+
+        saveAuth(res);
+        window.location.href = "dashboard.html";
+    } catch (err) {
+        console.error(err);
+        alert("Network error while signing up");
+    }
+}
+
+// Attach handlers
+document.getElementById('loginForm').addEventListener('submit', handleLogin);
+document.getElementById('signupForm').addEventListener('submit', handleSignup);
+</script>
 
 </body>
 </html>
