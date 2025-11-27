@@ -169,4 +169,5 @@ app.post('/api/claims/:id/decision', auth, (req, res) => {
 
 
 const PORT = process.env.PORT || 4000;
-app.listen(PORT, ()=> console.log(`Found-Hub API running on http://localhost:${PORT}`));
+app.listen(PORT, () => console.log(`Found-Hub API running on port ${PORT}`));
+
