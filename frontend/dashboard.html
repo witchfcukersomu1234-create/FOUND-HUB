@@ -68,10 +68,12 @@
   <script>
     // TODO: put your actual Railway backend URL here
     // e.g. const API = 'https://found-hub-production.up.railway.app';
-    const API = 'http://localhost:4000';
+    // Backend API Base URL (works on mobile + desktop)
+const API = 'https://found-hub-production-sfa3.up.railway.app';
 
-    function token() { return localStorage.getItem('fh_token'); }
-    function authHeader() { return { 'Authorization': 'Bearer ' + token() }; }
+function token() { return localStorage.getItem('fh_token'); }
+function authHeader() { return { 'Authorization': 'Bearer ' + token() }; }
+
 
     function requireLogin() {
       if (!token()) {
