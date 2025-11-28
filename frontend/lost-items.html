@@ -36,7 +36,7 @@
     </div>
   </header>
 
-  <!-- HERO (same look) -->
+  <!-- HERO -->
   <section class="text-center flex flex-col items-center justify-center min-h-[35vh] p-8"
            style="background-image: linear-gradient(rgba(0,0,0,0.55), rgba(0,0,0,0.55)), url('campus.avif'); background-size: cover; background-position: center;">
     <h2 class="text-4xl md:text-6xl font-bold" style="color: var(--accent2);">Report a Lost Item</h2>
@@ -48,10 +48,9 @@
   <!-- BODY -->
   <main class="container mx-auto px-4 py-8 grow">
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-      <!-- LEFT: form (UI preserved) -->
+      <!-- LEFT: form -->
       <div class="card p-6">
         <h3 class="text-2xl font-bold mb-6">Submit details</h3>
-        <!-- IMPORTANT: we only added ids; UI unchanged -->
         <form id="lostForm" class="space-y-5" onsubmit="return postLost(event)">
           <div>
             <label class="block text-sm mb-1" style="color: var(--muted);">Item Title</label>
@@ -74,7 +73,7 @@
         </form>
       </div>
 
-      <!-- RIGHT: list (UI preserved) -->
+      <!-- RIGHT: list -->
       <div class="card p-6">
         <div class="flex items-center justify-between mb-4">
           <h3 class="text-2xl font-bold">Lost board</h3>
@@ -97,22 +96,23 @@
     </div>
   </footer>
 
-  <!-- === BACKEND WIRING (no UI changes) === -->
+  <!-- === BACKEND WIRING === -->
   <script>
-    // If you deploy later, set once in browser console:
-    // localStorage.setItem('FH_API','https://your-railway-url'); location.reload();
- // Backend API Base URL (works on mobile + desktop)
-const API = 'https://found-hub-production-sfa3.up.railway.app';
+    // ✅ Correct backend API (update if Railway URL changes)
+    const API = 'https://found-hub-production-8fa3.up.railway.app';
 
-function token() { return localStorage.getItem('fh_token'); }
-function authHeader() { return { 'Authorization': 'Bearer ' + token() }; }
-
+    function token() { return localStorage.getItem('fh_token'); }
+    function authHeader() { return { 'Authorization': 'Bearer ' + token() }; }
 
     async function postLost(e){
       e.preventDefault();
+
       if(!token()){
-        alert('Please login first.'); location.href = 'login-signup.html'; return false;
+        alert('Please login first.');
+        location.href = 'login-signup.html';
+        return false;
       }
+
       const fd = new FormData();
       fd.append('type','lost');
       fd.append('title', document.getElementById('lostTitle').value.trim());
@@ -120,11 +120,23 @@ function authHeader() { return { 'Authorization': 'Bearer ' + token() }; }
       fd.append('category', document.getElementById('lostCategory').value.trim());
       fd.append('description', document.getElementById('lostDesc').value.trim());
 
-      const r = await fetch(`${API}/api/items`, { method:'POST', headers: auth(), body: fd });
-      const res = await r.json();
-      if(res.error){ alert(res.error); return false; }
-      document.getElementById('lostForm').reset();
-      loadLost();
+      try {
+        const r = await fetch(`${API}/api/items`, {
+          method:'POST',
+          headers: authHeader(),
+          body: fd
+        });
+        const res = await r.json();
+        if (!r.ok || res.error){
+          alert(res.error || 'Failed to post lost item');
+          return false;
+        }
+        document.getElementById('lostForm').reset();
+        loadLost();
+      } catch (err) {
+        console.error(err);
+        alert('Network error while posting lost item.');
+      }
       return false;
     }
 
@@ -140,14 +152,24 @@ function authHeader() { return { 'Authorization': 'Bearer ' + token() }; }
     }
 
     async function loadLost(){
-      const q = document.getElementById('lostSearch').value.trim();
-      const url = new URL(`${API}/api/items`);
-      url.searchParams.set('type','lost');
-      if(q) url.searchParams.set('q', q);
-      const r = await fetch(url);
-      const items = await r.json();
-      document.getElementById('lostList').innerHTML =
-        items.length ? items.map(itemRow).join('') : `<div class="text-gray-400">No lost posts yet.</div>`;
+      try {
+        const q = document.getElementById('lostSearch').value.trim();
+        const url = new URL(`${API}/api/items`);
+        url.searchParams.set('type','lost');
+        if(q) url.searchParams.set('q', q);
+
+        const r = await fetch(url);
+        const items = await r.json();
+
+        document.getElementById('lostList').innerHTML =
+          (Array.isArray(items) && items.length)
+          ? items.map(itemRow).join('')
+          : `<div class="text-gray-400">No lost posts yet.</div>`;
+      } catch (err) {
+        console.error(err);
+        document.getElementById('lostList').innerHTML =
+          `<div class="text-red-400 text-sm">Error loading lost items.</div>`;
+      }
     }
 
     // initial load
