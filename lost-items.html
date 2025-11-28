@@ -101,9 +101,10 @@
   <script>
     // If you deploy later, set once in browser console:
     // localStorage.setItem('FH_API','https://your-railway-url'); location.reload();
-    const API = localStorage.getItem('FH_API') || 'http://localhost:4000';
-    const token = () => localStorage.getItem('fh_token');
-    const auth = () => ({ 'Authorization': 'Bearer ' + token() });
+    const API = "https://found-hub-production-8fa3.up.railway.app";
+
+    function token(){ return localStorage.getItem('fh_token'); }
+    function authHeader(){ return { 'Authorization': 'Bearer ' + token() }; }
 
     async function postLost(e){
       e.preventDefault();
