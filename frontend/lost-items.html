@@ -121,11 +121,12 @@
       fd.append('description', document.getElementById('lostDesc').value.trim());
 
       try {
-        const r = await fetch(`${API}/api/items`, {
-          method:'POST',
-          headers: authHeader(),
-          body: fd
-        });
+     const r = await fetch(`${API}/api/items`, {
+  method: 'POST',
+  headers: { ...authHeader() }, // no Content-Type!
+  body: fd
+});
+
         const res = await r.json();
         if (!r.ok || res.error){
           alert(res.error || 'Failed to post lost item');
