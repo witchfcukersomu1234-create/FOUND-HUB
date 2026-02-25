@@ -7,14 +7,13 @@
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-black text-white flex flex-col min-h-screen">
-  <!-- NAV: direct access to all tabs -->
-  <header class="bg-[#121212] text-[#F5F5F5] py-4 border-b-4 border-yellow-400">
-    <div class="container mx-auto px-4 flex justify-between items-center">
+  <header class="bg-[#121212] text-[#F5F5F5] py-4 border-b border-yellow-400/40">
+    <div class="container mx-auto px-4 flex justify-between items-center gap-4">
       <a href="index.html" class="flex items-center gap-3">
         <div class="w-10 h-10 rounded-full border-2 border-yellow-400 flex items-center justify-center font-bold text-yellow-400">F</div>
         <span class="text-2xl font-extrabold">Found-Hub</span>
       </a>
-      <nav class="flex items-center gap-6 text-sm md:text-base">
+      <nav class="hidden md:flex items-center gap-6 text-sm md:text-base">
         <a href="index.html" class="hover:text-yellow-400">Home</a>
         <a href="about.html" class="hover:text-yellow-400">About Us</a>
         <a href="lost-items.html" class="hover:text-yellow-400">Lost Items</a>
@@ -22,18 +21,27 @@
         <a href="login-signup.html" class="hover:text-yellow-400">Login/Sign-Up</a>
         <a href="dashboard.html" class="hover:text-yellow-400">Dashboard</a>
       </nav>
+      <details class="md:hidden">
+        <summary class="cursor-pointer rounded border border-[#444] px-3 py-1.5 text-sm">Menu</summary>
+        <div class="absolute right-4 mt-2 w-44 rounded-md border border-[#333] bg-[#1F1F1F] p-2 space-y-1 z-20">
+          <a href="index.html" class="block px-2 py-1 rounded bg-[#2a2a2a]">Home</a>
+          <a href="about.html" class="block px-2 py-1 rounded hover:bg-[#2a2a2a]">About Us</a>
+          <a href="lost-items.html" class="block px-2 py-1 rounded hover:bg-[#2a2a2a]">Lost Items</a>
+          <a href="found-items.html" class="block px-2 py-1 rounded hover:bg-[#2a2a2a]">Found Items</a>
+          <a href="login-signup.html" class="block px-2 py-1 rounded hover:bg-[#2a2a2a]">Login/Sign-Up</a>
+          <a href="dashboard.html" class="block px-2 py-1 rounded hover:bg-[#2a2a2a]">Dashboard</a>
+        </div>
+      </details>
     </div>
   </header>
 
-  <!-- FULLSCREEN VIDEO HERO (Black & Yellow) -->
-  <section class="relative w-full h-screen flex items-center justify-center border-4 border-yellow-400 bg-black overflow-hidden">
+  <section class="relative w-full h-screen flex items-center justify-center border-b border-yellow-400/40 bg-black overflow-hidden">
     <video class="absolute inset-0 w-full h-full object-cover"
            autoplay muted loop playsinline preload="auto" poster="snapshot.jpg">
       <source src="campus-hero.mp4" type="video/mp4">
-      <!-- Fallback image if video isn't supported -->
       <img src="snapshot.jpg" alt="Campus View" class="w-full h-full object-cover" />
     </video>
-    <div class="absolute inset-0 bg-black/50"></div>
+    <div class="absolute inset-0 bg-black/55"></div>
 
     <div class="relative z-10 text-center px-4">
       <h1 class="text-5xl md:text-6xl font-extrabold text-yellow-400 drop-shadow">FOUND-HUB</h1>
@@ -45,32 +53,28 @@
     </div>
   </section>
 
-  <!-- MAIN (keep for future content; safe to remove if not needed) -->
-  <main id="main" class="bg-black text-white">
-    <section class="relative w-full max-w-6xl mx-auto px-4 py-12">
-      <h2 class="text-3xl md:text-4xl font-bold text-yellow-400 mb-6">How Found-Hub Works</h2>
-      <p class="text-white/80 leading-relaxed">
-        Use the buttons above to report lost items or post found ones. It’s quick and secure.
-      </p>
+  <main class="bg-black text-white">
+    <section class="w-full max-w-6xl mx-auto px-4 py-12 grid md:grid-cols-3 gap-4">
+      <article class="rounded-xl border border-yellow-400/30 p-5 bg-[#131313]">
+        <h2 class="text-lg font-semibold text-yellow-400">Report Quickly</h2>
+        <p class="text-white/80 text-sm mt-2">Post lost and found details in seconds to maximize recovery chances.</p>
+      </article>
+      <article class="rounded-xl border border-yellow-400/30 p-5 bg-[#131313]">
+        <h2 class="text-lg font-semibold text-yellow-400">Track Claims</h2>
+        <p class="text-white/80 text-sm mt-2">Use your dashboard to monitor item posts and ownership claims securely.</p>
+      </article>
+      <article class="rounded-xl border border-yellow-400/30 p-5 bg-[#131313]">
+        <h2 class="text-lg font-semibold text-yellow-400">Campus Community</h2>
+        <p class="text-white/80 text-sm mt-2">Built for students and staff to make returning belongings simpler and faster.</p>
+      </article>
     </section>
   </main>
 
-  <!-- FOOTER -->
   <footer class="mt-auto bg-[#121212] text-gray-300 border-t border-yellow-400/40">
     <div class="container mx-auto px-4 py-6 text-center">
       <p class="text-sm">© <span id="year"></span> Found-Hub. All rights reserved.</p>
     </div>
     <script>document.getElementById('year').textContent = new Date().getFullYear();</script>
   </footer>
-  <script>
-    // change this later to your Railway URL when you deploy
- // Backend API Base URL (works on mobile + desktop)
-const API = 'https://found-hub-production-sfa3.up.railway.app';
-
-function token() { return localStorage.getItem('fh_token'); }
-function authHeader() { return { 'Authorization': 'Bearer ' + token() }; }
-
-  </script>
-  
 </body>
 </html>

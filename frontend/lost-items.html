@@ -7,154 +7,197 @@
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
 
-<body style="background-color:#1A1A1A" class="flex flex-col min-h-screen">
-
-<!-- HEADER -->
-<header style="background-color:#121212;color:#F5F5F5;padding:1rem 2rem;">
-  <div class="container mx-auto flex justify-between items-center">
+<body style="background-color:#1A1A1A" class="flex flex-col min-h-screen text-[#F5F5F5]">
+<header style="background-color:#121212;color:#F5F5F5;padding:1rem 1.25rem;" class="border-b border-yellow-400/30">
+  <div class="container mx-auto flex justify-between items-center gap-4">
     <a href="index.html" class="text-2xl font-bold">Found-Hub</a>
-    <div class="hidden md:flex items-center space-x-6">
-      <a href="/index.html" style="color:#CCC" class="hover:text-white transition-colors">Home</a>
-      <a href="/about.html" style="color:#CCC" class="hover:text-white transition-colors">About Us</a>
-      <a href="/lost-items.html" style="color:#CCC" class="hover:text-white transition-colors font-bold !text-white">Lost Items</a>
-      <a href="/found-items.html" style="color:#CCC" class="hover:text-white transition-colors">Found Items</a>
-      <a href="/login-signup.html" style="color:#CCC" class="hover:text-white transition-colors">Login/Sign-Up</a>
-      <a href="/dashboard.html" style="color:#CCC" class="hover:text-white transition-colors">Dashboard</a>
-    </div>
+
+    <nav class="hidden md:flex items-center space-x-6">
+      <a href="index.html" style="color:#CCC" class="hover:text-white transition-colors">Home</a>
+      <a href="about.html" style="color:#CCC" class="hover:text-white transition-colors">About Us</a>
+      <a href="lost-items.html" style="color:#CCC" class="hover:text-white transition-colors font-bold !text-white">Lost Items</a>
+      <a href="found-items.html" style="color:#CCC" class="hover:text-white transition-colors">Found Items</a>
+      <a href="login-signup.html" style="color:#CCC" class="hover:text-white transition-colors">Login/Sign-Up</a>
+      <a href="dashboard.html" style="color:#CCC" class="hover:text-white transition-colors">Dashboard</a>
+    </nav>
+
+    <details class="md:hidden">
+      <summary class="cursor-pointer rounded border border-[#444] px-3 py-1.5 text-sm">Menu</summary>
+      <div class="absolute right-4 mt-2 w-44 rounded-md border border-[#333] bg-[#1F1F1F] p-2 space-y-1 z-20">
+        <a href="index.html" class="block px-2 py-1 rounded hover:bg-[#2a2a2a]">Home</a>
+        <a href="about.html" class="block px-2 py-1 rounded hover:bg-[#2a2a2a]">About Us</a>
+        <a href="lost-items.html" class="block px-2 py-1 rounded bg-[#2a2a2a]">Lost Items</a>
+        <a href="found-items.html" class="block px-2 py-1 rounded hover:bg-[#2a2a2a]">Found Items</a>
+        <a href="login-signup.html" class="block px-2 py-1 rounded hover:bg-[#2a2a2a]">Login/Sign-Up</a>
+        <a href="dashboard.html" class="block px-2 py-1 rounded hover:bg-[#2a2a2a]">Dashboard</a>
+      </div>
+    </details>
   </div>
 </header>
 
-<!-- HERO -->
-<section class="text-center flex flex-col items-center justify-center min-h-[50vh] p-8"
-         style="background-image:linear-gradient(rgba(0,0,0,.4),rgba(0,0,0,.4)),url('campus.avif');background-size:cover;background-position:center;">
+<section class="text-center flex flex-col items-center justify-center min-h-[45vh] p-8"
+         style="background-image:linear-gradient(rgba(0,0,0,.5),rgba(0,0,0,.5)),url('campus.avif');background-size:cover;background-position:center;">
   <h2 class="text-4xl md:text-6xl font-bold" style="color:#FFD700;">Report Lost Item</h2>
   <p class="mt-4 text-lg md:text-xl max-w-2xl" style="color:#FFA500;">
-    Describe your lost item and where you last saw it.
+    Describe your lost item with clear details so others can help recover it faster.
   </p>
 </section>
 
-<!-- MAIN -->
 <main class="container mx-auto py-10 px-6 grid md:grid-cols-2 gap-6">
-
-  <!-- Form -->
   <section class="p-6 rounded-lg" style="background-color:#262626;">
-    <h3 class="text-2xl font-bold mb-6" style="color:#F5F5F5;">Submit details</h3>
+    <h3 class="text-2xl font-bold mb-6">Submit details</h3>
 
     <form id="lostForm" class="space-y-4" onsubmit="return postLost(event)">
       <div>
-        <label class="block text-sm mb-1" style="color:#CCC;">Item Title</label>
+        <label for="lostTitle" class="block text-sm mb-1" style="color:#CCC;">Item Title</label>
         <input id="lostTitle" required class="w-full rounded-md p-2 text-sm"
                placeholder="Example: Wallet, Phone, ID Card"
-               style="background:#1A1A1A;color:#F5F5F5;border:1px solid #262626;">
+               style="background:#1A1A1A;color:#F5F5F5;border:1px solid #3a3a3a;">
       </div>
 
       <div>
-        <label class="block text-sm mb-1" style="color:#CCC;">Last Seen Location</label>
+        <label for="lostLocation" class="block text-sm mb-1" style="color:#CCC;">Last Seen Location</label>
         <input id="lostLocation" class="w-full rounded-md p-2 text-sm"
                placeholder="Library, Canteen, Lab 302"
-               style="background:#1A1A1A;color:#F5F5F5;border:1px solid #262626;">
+               style="background:#1A1A1A;color:#F5F5F5;border:1px solid #3a3a3a;">
       </div>
 
       <div>
-        <label class="block text-sm mb-1" style="color:#CCC;">Category</label>
+        <label for="lostCategory" class="block text-sm mb-1" style="color:#CCC;">Category</label>
         <input id="lostCategory" class="w-full rounded-md p-2 text-sm"
                placeholder="Phone, Bag, ID Card..."
-               style="background:#1A1A1A;color:#F5F5F5;border:1px solid #262626;">
+               style="background:#1A1A1A;color:#F5F5F5;border:1px solid #3a3a3a;">
       </div>
 
       <div>
-        <label class="block text-sm mb-1" style="color:#CCC;">Description</label>
+        <label for="lostDesc" class="block text-sm mb-1" style="color:#CCC;">Description</label>
         <textarea id="lostDesc" rows="3" class="w-full rounded-md p-2 text-sm"
                   placeholder="Color, marks, brand…"
-                  style="background:#1A1A1A;color:#F5F5F5;border:1px solid #262626;"></textarea>
+                  style="background:#1A1A1A;color:#F5F5F5;border:1px solid #3a3a3a;"></textarea>
       </div>
 
-      <button type="submit"
+      <button id="lostSubmitBtn" type="submit"
               class="w-full flex items-center justify-center p-2 text-white font-semibold rounded-md transition-colors"
               style="background:#FFA500;">
         Report Lost Item
       </button>
+      <p id="lostFormStatus" class="text-sm text-yellow-300 hidden" aria-live="polite"></p>
     </form>
   </section>
 
-  <!-- Lost List -->
   <section class="p-6 rounded-lg" style="background-color:#262626;">
-    <h3 class="text-2xl font-bold mb-6" style="color:#F5F5F5;">Lost Board</h3>
+    <h3 class="text-2xl font-bold mb-6">Lost Board</h3>
 
     <div class="flex gap-2 mb-4">
       <input id="lostSearch" placeholder="Search lost items"
              class="flex-1 rounded-md p-2 text-sm"
-             style="background:#1A1A1A;color:#F5F5F5;border:1px solid #262626;">
+             style="background:#1A1A1A;color:#F5F5F5;border:1px solid #3a3a3a;">
       <button onclick="loadLost()"
               class="px-4 rounded-md text-sm font-semibold"
               style="background:#FFA500;color:#111;">Search</button>
     </div>
 
+    <p id="lostListStatus" class="text-sm text-[#AAA] mb-3" aria-live="polite"></p>
     <div id="lostList" class="space-y-3"></div>
   </section>
 </main>
 
-<!-- FOOTER -->
 <footer style="background:#121212;color:#CCC" class="py-6 text-center mt-auto">
-  © 2025 Found-Hub
+  © 2026 Found-Hub
 </footer>
 
 <script>
-const API = "https://found-hub-production-8fa3.up.railway.app";
+const API = 'https://found-hub-production-sfa3.up.railway.app';
 
 function token(){ return localStorage.getItem('fh_token'); }
-function authHeader(){ return { 'Authorization':'Bearer '+token() }; }
+function authHeader(){ return { Authorization:'Bearer '+token() }; }
+function escapeHtml(value = '') {
+  return value
+    .replaceAll('&', '&amp;')
+    .replaceAll('<', '&lt;')
+    .replaceAll('>', '&gt;')
+    .replaceAll('"', '&quot;')
+    .replaceAll("'", '&#39;');
+}
 
-// POST LOST ITEM
+function setFormBusy(isBusy, message = '') {
+  const btn = document.getElementById('lostSubmitBtn');
+  const status = document.getElementById('lostFormStatus');
+  btn.disabled = isBusy;
+  btn.style.opacity = isBusy ? '.7' : '1';
+  status.classList.toggle('hidden', !message);
+  status.textContent = message;
+}
+
 async function postLost(e){
   e.preventDefault();
 
   if(!token()){
-    alert("Please login first.");
-    location.href="login-signup.html";
-    return;
+    alert('Please login first.');
+    location.href='login-signup.html';
+    return false;
   }
 
   const fd = new FormData();
-  fd.append("type", "lost");
-  fd.append("title", lostTitle.value.trim());
-  fd.append("location", lostLocation.value.trim());
-  fd.append("category", lostCategory.value.trim());
-  fd.append("description", lostDesc.value.trim());
+  fd.append('type', 'lost');
+  fd.append('title', lostTitle.value.trim());
+  fd.append('location', lostLocation.value.trim());
+  fd.append('category', lostCategory.value.trim());
+  fd.append('description', lostDesc.value.trim());
 
-  const r = await fetch(`${API}/api/items`, {
-    method:"POST",
-    headers: authHeader(),
-    body: fd
-  });
+  try {
+    setFormBusy(true, 'Submitting your lost item...');
+    const r = await fetch(`${API}/api/items`, {
+      method:'POST',
+      headers: authHeader(),
+      body: fd
+    });
 
-  const res = await r.json();
-  if(res.error) return alert(res.error);
+    const res = await r.json();
+    if(!r.ok || res.error) throw new Error(res.error || 'Unable to submit item.');
 
-  alert("Lost item posted!");
-  lostForm.reset();
-  loadLost();
+    alert('Lost item posted!');
+    lostForm.reset();
+    setFormBusy(false, 'Posted successfully.');
+    loadLost();
+  } catch (err) {
+    setFormBusy(false, err.message || 'Submission failed. Please try again.');
+  }
+
+  return false;
 }
 
-// LOAD LOST ITEMS
 async function loadLost(){
-  const q = lostSearch.value.trim();
-  const url = new URL(`${API}/api/items`);
-  url.searchParams.set("type","lost");
-  if(q) url.searchParams.set("q", q);
+  const status = document.getElementById('lostListStatus');
+  const list = document.getElementById('lostList');
 
-  const r = await fetch(url);
-  const items = await r.json();
+  try {
+    status.textContent = 'Loading lost items...';
+    const q = lostSearch.value.trim();
+    const url = new URL(`${API}/api/items`);
+    url.searchParams.set('type','lost');
+    if(q) url.searchParams.set('q', q);
 
-  lostList.innerHTML = items.length
-    ? items.map(i => `
-      <div class="rounded-md p-3" style="background:#1A1A1A;border:1px solid #333;">
-        <div class="font-semibold" style="color:#F5F5F5">${i.title}</div>
-        <div style="color:#AAA" class="text-sm">${i.location || ""}</div>
-        <div class="text-sm mt-1" style="color:#CFCFCF">${i.description || ""}</div>
-      </div>
-    `).join("")
-    : `<p style="color:#AAA">No lost items reported yet.</p>`;
+    const r = await fetch(url);
+    const items = await r.json();
+
+    if(!r.ok || !Array.isArray(items)) throw new Error('Could not fetch lost items right now.');
+
+    list.innerHTML = items.length
+      ? items.map(i => `
+        <article class="rounded-md p-3" style="background:#1A1A1A;border:1px solid #333;">
+          <h4 class="font-semibold" style="color:#F5F5F5">${escapeHtml(i.title || '')}</h4>
+          <p style="color:#AAA" class="text-sm">${escapeHtml(i.location || 'Location not provided')}</p>
+          <p class="text-sm mt-1" style="color:#CFCFCF">${escapeHtml(i.description || 'No description provided.')}</p>
+        </article>
+      `).join('')
+      : '<p style="color:#AAA">No lost items reported yet.</p>';
+
+    status.textContent = items.length ? `${items.length} item(s) found.` : 'No matching items.';
+  } catch (err) {
+    list.innerHTML = '';
+    status.textContent = err.message || 'Unable to load items.';
+  }
 }
 
 loadLost();
